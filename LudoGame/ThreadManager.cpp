@@ -1,13 +1,18 @@
+//ThreadManager.cpp
 #include "ThreadManager.h"
 #include <iostream>
 #include <unistd.h>
 
-ThreadManager::ThreadManager(Grid &g) : grid(g), currentPlayer(1), gameEnded(false) {
-    // Initialize players (4 players)
-    for (int i = 1; i <= 4; i++) {
-        players.emplace_back(i);
+// In ThreadManager.cpp
+
+ThreadManager::ThreadManager(Grid &g, vector<string>& playerNames) : grid(g), currentPlayer(1), gameEnded(false) {
+    // Initialize players (4 players) and take player names from playerNames vector
+    for (int i = 0; i < playerNames.size(); i++) {
+        players.emplace_back(i + 1, playerNames[i]);
     }
 }
+
+
 
 // Function to simulate dice rolls
 int ThreadManager::rollDice() {
@@ -58,11 +63,15 @@ void* ThreadManager::playerThread(void* args) {
 
         if (manager->gameEnded) break;
 
-        int diceRoll = rollDice();
-        cout << "Player " << playerId << " rolled: " << diceRoll << "\n";
+        // Display the current player's turn with their name
+        cout << manager->players[playerId - 1].getName() << "'s turn. Press Enter to roll the dice...\n";
+        cin.get(); // Wait for user to press Enter
+
+        int diceRoll = manager->rollDice();
+        cout << manager->players[playerId - 1].getName() << " rolled: " << diceRoll << "\n";
 
         if (diceRoll == 6) {
-            cout << "Player " << playerId << " gets a bonus roll!\n";
+            cout << manager->players[playerId - 1].getName() << " gets a bonus roll!\n";
         }
 
         // Move tokens or pass turn if no valid move
@@ -76,11 +85,11 @@ void* ThreadManager::playerThread(void* args) {
         }
 
         if (!moved) {
-            cout << "Player " << playerId << " cannot move any token.\n";
+            cout << manager->players[playerId - 1].getName() << " cannot move any token.\n";
         }
 
         if (manager->checkWinningConditions()) {
-            cout << "Player " << playerId << " wins the game!\n";
+            cout << manager->players[playerId - 1].getName() << " wins the game!\n";
             manager->gameEnded = true;
             manager->cv.notify_all();
             return nullptr;

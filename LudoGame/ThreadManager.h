@@ -1,3 +1,4 @@
+//ThreadManager.h
 #ifndef THREAD_MANAGER_H
 #define THREAD_MANAGER_H
 
@@ -31,7 +32,7 @@ private:
     bool checkWinningConditions();
 
 public:
-    ThreadManager(Grid &g);
+    ThreadManager(Grid &g, vector<string>& playerNames); // Updated constructor
     void startGame();           // Start threads for players and master thread
     static void* playerThread(void* args); // Function for player thread
     static void* masterThread(void* args); // Master thread to monitor the game

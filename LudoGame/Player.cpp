@@ -1,10 +1,14 @@
+
+//player.cpp
 #include "Player.h"
 #include <random>
 
-Player::Player(int id) : playerId(id), hitRate(0), completedTokens(0) {
+Player::Player(int id, const string &playerName) : playerId(id), name(playerName), hitRate(0), completedTokens(0) {
     tokens.fill(-1); // All tokens start in the yard
 }
-
+// string Player::getName() const {
+//     return name;
+// }
 int Player::rollDice() {
     random_device rd;
     mt19937 gen(rd());
