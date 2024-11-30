@@ -1,4 +1,3 @@
-//Grid.cpp
 #include "Grid.h"
 
 // Constructor to initialize the Ludo board
@@ -26,6 +25,17 @@ Grid::Grid() {
             board[i][7] = 'S';
             board[7][i] = 'S';
         }
+    }
+}
+
+// Function to initialize tokens in their starting positions
+void Grid::initializeTokens() {
+    // Set initial positions for each player's tokens in their home yards
+    for (int i = 0; i < 4; i++) {
+        board[0][i] = '1';          // Player 1 tokens
+        board[0][14 - i] = '2';     // Player 2 tokens
+        board[14][i] = '3';         // Player 3 tokens
+        board[14][14 - i] = '4';    // Player 4 tokens
     }
 }
 
