@@ -49,6 +49,23 @@ void Grid::displayGrid() const {
     }
 }
 
+// Function to update a token's position on the grid
+void Grid::updateTokenPosition(int playerId, int tokenId, int newPosition, int oldPosition) {
+    // Clear the old position
+    if (oldPosition >= 0 && oldPosition < 50) {
+        int oldRow = oldPosition / 15;
+        int oldCol = oldPosition % 15;
+        board[oldRow][oldCol] = '.'; // Reset to empty
+    }
+
+    // Update to the new position
+    if (newPosition >= 0 && newPosition < 50) {
+        int newRow = newPosition / 15;
+        int newCol = newPosition % 15;
+        board[newRow][newCol] = '1' + playerId - 1; // Display as 1, 2, 3, 4 for each player
+    }
+}
+
 // Function to return the grid array
 char (*Grid::getGrid())[15] {
     return board;

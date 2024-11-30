@@ -13,6 +13,9 @@ public:
     void displayGrid() const; // Display the grid on the console
     char (*getGrid())[15];    // Function to return the grid
     void initializeTokens();  // Place tokens in their initial positions
+
+    // New function to update token positions
+    void updateTokenPosition(int playerId, int tokenId, int newPosition, int oldPosition);
 };
 
 #endif

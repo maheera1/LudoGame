@@ -95,9 +95,17 @@ void* ThreadManager::playerThread(void* args) {
 
             bool moved = false;
             for (int i = 0; i < 4; i++) {
+                int oldPosition = manager->players[playerId - 1].getTokenPosition(i);
+
                 if (manager->players[playerId - 1].moveToken(i, diceRoll, manager->grid.getGrid())) {
-                    moved = true;
+                    int newPosition = manager->players[playerId - 1].getTokenPosition(i);
+                    manager->grid.updateTokenPosition(playerId, i, newPosition, oldPosition);
+
+                    cout << "Updated Grid after " << manager->players[playerId - 1].getName() << "'s move:\n";
+                    manager->grid.displayGrid();
+
                     manager->handleCollisions(playerId, i);
+                    moved = true;
                     break;
                 }
             }
@@ -185,10 +193,24 @@ void ThreadManager::startGame() {
         return a.getHitRate() > b.getHitRate();
     });
 
-    cout << "Game Over! Final Results:\n";
+    cout << "\nGame Over! Final Results:\n";
     for (size_t i = 0; i < rankedPlayers.size(); ++i) {
         cout << i + 1 << ". Player " << rankedPlayers[i].getName() << ": "
              << "Tokens completed: " << rankedPlayers[i].getCompletedTokens()
              << ", Hits: " << rankedPlayers[i].getHitRate() << "\n";
+    }
+
+    cout << "\nThreads Canceled (if any):\n";
+    for (size_t i = 0; i < players.size(); ++i) {
+        if (!threadActive[i]) {
+            cout << "Player " << players[i].getName();
+            if (noSixTurns[i] >= 20) {
+                cout << " was removed due to inactivity (20 turns without rolling a six).\n";
+            } else if (players[i].allTokensCompleted()) {
+                cout << " completed all tokens.\n";
+            } else {
+                cout << " was removed for unknown reasons.\n"; // Catch-all
+            }
+        }
     }
 }
